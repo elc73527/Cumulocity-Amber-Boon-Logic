@@ -1,11 +1,6 @@
 # Cumulocity-Amber-Boon-Logic
 SoftwareAG is partnered with boon logic we have now build an plugin which is collaboration of Software AG Cumulocity IoT with Boon Logic intuitive to adaptive machine learning-based anomaly detection capability along with device managing and monitoring capabilities of Cumulocity.
 
-# Cumulocity Amber Boon Logic
-
-SoftwareAG is partnered with boon logic we have now build an plugin  which is collaboration of Software AG Cumulocity IoT with Boon Logic intuitive to adaptive machine learning-based anomaly detection capability along with device managing and monitoring capabilities of Cumulocity.
-
-
 # Amber RCA Widget for Cumulocity
 
 
@@ -24,7 +19,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 ## Representation
 
-![](RCAWidget.png)
+![RCAWidget](https://user-images.githubusercontent.com/24636020/182810536-4a2b243e-c86b-4fa2-b000-583b47b96ee4.png)
 
 
 ## Supported Product Versions
