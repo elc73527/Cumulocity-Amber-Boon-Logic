@@ -192,7 +192,7 @@ Congratulations! RCA Chart is configured.
 
 ## User Guide
 
-![](RCA_Widget_Configuration.PNG)
+![RCA_Widget_Configuration](https://user-images.githubusercontent.com/24636020/182811609-c6d92bf7-0aae-48c8-87e1-5df99fb698a8.PNG)
 
 1. Target Assets/Devices - deviceid of interest(need to be pre configured with Amber)
 2. Select Device Specific relavent RCA measurements - name of the RCA measurements for which you want chart.
@@ -217,7 +217,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 ## Representation
 
-![](Amber Device Configuration.PNG)
+![Amber Device Configuration](https://user-images.githubusercontent.com/24636020/182811678-ac8df8c7-b368-4fdd-8f70-c2c40f6005aa.PNG)
 
 
 ## Supported Product Versions
@@ -377,7 +377,7 @@ Congratulations! RCA Chart is configured.
 
 ## User Guide
 
-![](Amber Device Setting Configuration.PNG)
+![Amber Device Setting Configuration](https://user-images.githubusercontent.com/24636020/182811792-07a53d74-0dcc-4578-9f31-eccf73757b46.PNG)
 
 1. Takes microservice name and page size as input.
 2. Microservice when initially deployed will connect to amber using amber - URL/username/password. Where as on widget level if one wants to forcedly cut down the connection to amber we can just click on disconnect or if the amber credentials are changed then for first time we can connect from widget level and microservice will hold the value.
