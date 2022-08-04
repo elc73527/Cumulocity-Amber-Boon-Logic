@@ -1,0 +1,15 @@
+{
+  "name": "gp-lib-boonlogic",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^11.1.1",
+    "@angular/core": "^11.1.1"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.180",
+    "@types/uuid": "^8.3.4"
+  }
+}

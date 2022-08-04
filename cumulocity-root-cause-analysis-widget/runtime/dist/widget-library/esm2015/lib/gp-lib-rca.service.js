@@ -1,0 +1,9 @@
+import { Injectable } from '@angular/core';
+export class GpLibRcaService {
+    constructor() { }
+}
+GpLibRcaService.decorators = [
+    { type: Injectable }
+];
+GpLibRcaService.ctorParameters = () => [];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ3AtbGliLXJjYS5zZXJ2aWNlLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvZ3AtbGliLXJjYS9zcmMvbGliL2dwLWxpYi1yY2Euc2VydmljZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxPQUFPLEVBQUUsVUFBVSxFQUFFLE1BQU0sZUFBZSxDQUFDO0FBRzNDLE1BQU0sT0FBTyxlQUFlO0lBQzFCLGdCQUFlLENBQUM7OztZQUZqQixVQUFVIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgR3BMaWJSY2FTZXJ2aWNlIHtcbiAgY29uc3RydWN0b3IoKSB7fVxufVxuIl19

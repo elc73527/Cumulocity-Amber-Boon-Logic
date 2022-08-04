@@ -1,0 +1,17 @@
+{
+  "name": "Amber BoonLogic Config Widget",
+  "contextPath": "boonlogic-config-runtime-widget",
+  "key": "boonlogic-config-widget-application-key",
+  "contentSecurityPolicy": "default-src 'self'",
+  "icon": {
+    "class": "dlt-c8y-icon-cogs"
+  },
+  "manifest": {
+    "noAppSwitcher": true,
+    "requiredPlatformVersion": ">=1011.0.0",
+    "version": "2.0.0",
+    "author": "Sabreen Irfana - Software AG, Global Presales",
+    "description": "It is used to connect to Amber Boon Logic and configure and pool data for existing cumulocity devices.",
+    "license": "Apache 2.0"
+  }
+}
