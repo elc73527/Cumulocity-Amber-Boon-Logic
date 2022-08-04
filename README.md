@@ -34,7 +34,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download **[Runtime Binary](https://labcase.softwareag.com/projects/boon-logic/storage/files/1335524/download)** and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download **[Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/rca-runtime-widget-2.0.0.zip)** and use application builder to install your runtime widget.
 
 ### Installation of widget through Appbuilder 
 
@@ -80,7 +80,7 @@ And when ever AD>0 on click one can see the relavent RCA.
 
       Installation command :  ```npm i chart.js@2.9.3 ``` 
 
-2. Grab the Amber RCA Chart **[Latest Release Binary](https://labcase.softwareag.com/projects/boon-logic/storage/files/1335525/download)**
+2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-lib-rca-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
@@ -233,7 +233,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download [Runtime Binary](https://labcase.softwareag.com/storage/d/d85eabf46e4df5f39ddb1effdca3cac4) and use application builder to install your runtime widget.
+* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/boonlogic-config-runtime-widget-2.0.0.zip) and use application builder to install your runtime widget.
 
 ### Installation of widget through Appbuilder 
 
@@ -266,7 +266,7 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 **Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/SoftwareAG/cumulocity-app-builder) before proceeding further.
 
-1. Grab the Amber RCA Chart **[Latest Release Binary](https://labcase.softwareag.com/storage/d/470715acdcdb51dd5d48515154a66986)**
+1. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-lib-boonlogic-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
