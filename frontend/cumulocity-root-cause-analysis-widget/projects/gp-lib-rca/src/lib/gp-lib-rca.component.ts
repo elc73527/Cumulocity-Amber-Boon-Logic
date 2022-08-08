@@ -80,29 +80,6 @@ export class GpLibRcaComponent implements OnInit {
     this.deviceId = this.config.device.id;
     this.selectedRCAMeasurements = this.config.selectedRCAMeasurements;
     this.interval = this.config.interval;
-    // this.interval = "Last Hour";
-    //     this.selectedRCAMeasurements = [
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_0",
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_1",
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_2",
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_3",
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_4",
-    //     "c8y_AmberRootCause.c8y_SignalStrength-actual_current_5",
-    // ];
-    // this.deviceId = 8492;
-    //   this.selectedRCAMeasurements = [
-    //     "c8y_AmberRootCause.c8y_comp-gb_hss_de",
-    //     "c8y_AmberRootCause.c8y_comp-gb_hss_nde",
-    //     "c8y_AmberRootCause.c8y_comp-comp_female_nde",
-    //     "c8y_AmberRootCause.c8y_comp-gb_lss_nde",
-    //     "c8y_AmberRootCause.c8y_comp-gb_lss_de",
-    //     "c8y_AmberRootCause.c8y_comp-mtr_nde",
-    //     "c8y_AmberRootCause.c8y_comp-mtr_de",
-    //     "c8y_AmberRootCause.c8y_comp-comp_male_de",
-    //     "c8y_AmberRootCause.c8y_comp-comp_male_nde",
-    //     "c8y_AmberRootCause.c8y_comp-comp_female_de"
-    // ];
-    //   this.deviceId = 1380;
     this.barChartOptions['scales'] = {
       xAxes: [
         {
@@ -160,7 +137,6 @@ export class GpLibRcaComponent implements OnInit {
             const msmt = measurementData.data;
             if ( msmt && msmt[this.valueFragmentType] && msmt[this.valueFragmentType][this.valueFragmentSeries])
             {
-              if (isDevMode()) {console.log("msmt",msmt);}
               await this.LoadDeviceData(); 
             }
           }
@@ -189,9 +165,6 @@ export class GpLibRcaComponent implements OnInit {
   async LoadDeviceData() {
     this.device = await this.cmonSvc.getTargetObject(this.deviceId);
     let response = await this.cmonSvc.getSpecificFragmentDevices(1, this.device.name);
-    if (isDevMode()) {
-      console.log('+-+- MANAGED OBJECT WITH AMBER FRAGMENT', response.data);
-    }
     if (response.data) {
       await this.getmeasurement();
     } else {
@@ -201,9 +174,6 @@ export class GpLibRcaComponent implements OnInit {
   async checkFargmentSeries() {
     this.measurementList.forEach((ml: any) => {
       if (ml.name === 'ad') {
-        if (isDevMode()) {
-          console.log('+-+-c8y_ad.ad measurement exist');
-        }
         this.valueFragmentType = 'c8y_ad';
         this.valueFragmentSeries = 'ad';
       }
@@ -243,9 +213,6 @@ export class GpLibRcaComponent implements OnInit {
           this.measurementTypeList = [];
           if (mes && mes.length > 0) {
             this.measurementTypeList = [...mes];
-            if (isDevMode()) {
-              console.log('+-+- CHECKING LIST MEASUREMENTS FOR: ', this.measurementTypeList);
-            }
             await this.checkFargmentSeries();
           }
         });
@@ -265,7 +232,6 @@ export class GpLibRcaComponent implements OnInit {
     } else if (this.interval === '' || this.interval === undefined) {
       fromtime = moment(totime).subtract(1, 'hours').format();
     }
-    if (isDevMode()) {console.log('fromtime - totime', fromtime);}
     const response = (await this.cmonSvc.getLastMeasurementForSource(
       deviceId,
       fromtime,
@@ -274,9 +240,6 @@ export class GpLibRcaComponent implements OnInit {
       this.valueFragmentSeries
     )) as any;
 
-    if (isDevMode()) {
-      console.log('+-+- Measurement data: ', response);
-    }
     if (response && response.data.length > 0) {
       response.data.forEach((mes: any) => {
         if (
@@ -290,11 +253,7 @@ export class GpLibRcaComponent implements OnInit {
           dataSet.push(arr);
         }
       });
-      if (isDevMode()) {
-      console.log('dataset', dataSet);}
       dataSet.reverse();
-      if (isDevMode()) {
-      console.log('+-+- val: ', dataSet);}
       let k: any;
       const dataValues: any[] = [];
       const labels: string[] = [];
@@ -306,10 +265,6 @@ export class GpLibRcaComponent implements OnInit {
         labels.push(moment(iteam.key).format('YYYY-MM-DD HH:mm:ss'));
         dataValues.push(iteam.value);
       });
-      if (isDevMode()) {
-      console.log('dataValues ', dataValues);
-      console.log('labels', labels);
-      }
       let dlabels = labels.map((l) => l.split(' '));
 
       if (dataValues.length > 0) {
@@ -319,13 +274,10 @@ export class GpLibRcaComponent implements OnInit {
         this.dataLoaded = Promise.resolve(true);
       }
       this.setChartColors();
-      if (isDevMode()) {
-      console.log('barChartData', this.barChartData);}
     }
   }
 
   public chartClicked(event: any): void {
-    if (isDevMode()) {console.log('event', event);}
     if (event.active.length > 0) {
       const chart = event.active[0]._chart;
       const activePoints = chart.getElementsAtEventForMode(event.event, 'point', chart.options);
@@ -336,8 +288,6 @@ export class GpLibRcaComponent implements OnInit {
         this.displayModalDialog(label, value);
       }
     } else {
-      if (isDevMode()) {
-      console.log('there is no active element');}
       return;
     }
   }
@@ -371,7 +321,6 @@ export class GpLibRcaComponent implements OnInit {
           fragment
         )) as any;
       }
-      if (isDevMode()) {console.log('response', response);}
       if (response && response.data.length === 1) {
         response.data.forEach((mes: any) => {
           series.forEach((series: any) => {
@@ -399,13 +348,9 @@ export class GpLibRcaComponent implements OnInit {
     let dataset: any;
     let setflag = 1;
     await this.getRCAValue(ctime, setflag);
-
-    if (isDevMode()) {console.log('rcaDataset', this.rcaDataset);}
-
     if (this.rcaDataset.length === 0) {
       setflag = 0;
       await this.getRCAValue(ctime, setflag);
-      if (isDevMode()) {console.log('rcaDataset inner fnction', this.rcaDataset);}
     }
 
     const initialState = {
@@ -418,7 +363,6 @@ export class GpLibRcaComponent implements OnInit {
     };
     this.bsModalRefOption = this.modalService.show(RCAViewModalComponent, {
       initialState,
-      // class: 'modal-sm',
     });
   }
 

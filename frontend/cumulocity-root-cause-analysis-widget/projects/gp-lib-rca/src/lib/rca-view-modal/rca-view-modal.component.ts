@@ -103,8 +103,7 @@ export class RCAViewModalComponent implements OnInit {
       labels.push(iteam.key);
       dataValues.push(iteam.value);
     });
-    console.log('dataValues ', dataValues);
-    let dlabels = labels.map((l) => l.split('-'));
+   let dlabels = labels.map((l) => l.split('-'));
     let vlabels: any[] = [];
     dlabels.forEach((label: any) => {
       vlabels.push(label[1]);
@@ -116,7 +115,6 @@ export class RCAViewModalComponent implements OnInit {
       this.dataLoaded = Promise.resolve(true);
     }
     this.setChartColors();
-    console.log('barChartData', this.barChartData);
   }
   setChartColors() {
     let borderColor = [];

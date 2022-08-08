@@ -46,14 +46,8 @@ export class Commonc8yService {
   }
 
   getTargetObject(deviceId: String): any {
-    if (isDevMode()) {
-      console.log('+-+- checking for ', deviceId);
-    }
     return new Promise((resolve, reject) => {
       this.invSvc.detail(deviceId).then((resp) => {
-        if (isDevMode()) {
-          console.log('+-+- DETAILS FOR MANAGED OBJECT ' + deviceId, resp);
-        }
         if (resp.res.status === 200) {
           resolve(resp.data);
         } else {
@@ -76,7 +70,6 @@ export class Commonc8yService {
     allDevices: { data: any[]; res: any }
   ): Promise<IResultList<IManagedObject>> {
     const inventoryFilter = {
-      // fragmentType: 'c8y_IsDevice',
       pageSize: 50,
       withTotalPages: true,
       currentPage: pageToGet,
@@ -89,9 +82,6 @@ export class Commonc8yService {
         if (resp.res.status === 200) {
           if (resp.data && resp.data.length >= 0) {
             allDevices.data.push.apply(allDevices.data, resp.data);
-            if (isDevMode()) {
-              console.log('+-+- checking on devices found\n', resp);
-            }
             // response does not have totalPages... :(
             // suppose that if # of devices is less that the page size, then all devices have already been retrieved
             if (resp.data.length < inventoryFilter.pageSize) {
@@ -191,9 +181,6 @@ export class Commonc8yService {
         if (resp.res.status === 200) {
           if (resp.data && resp.data.length >= 0) {
             allAdditions.data.push.apply(allAdditions.data, resp.data);
-            if (isDevMode()) {
-              console.log('+-+- checking on additions found\n', resp);
-            }
             // response does not have totalPages... :(
             // suppose that if # of devices is less that the page size, then all devices have already been retrieved
             if (resp.data.length < inventoryFilter.pageSize) {
@@ -239,9 +226,6 @@ export class Commonc8yService {
         if (resp.res.status === 200) {
           if (resp.data && resp.data.length >= 0) {
             allInventoryItems.data.push.apply(allInventoryItems.data, resp.data);
-            if (isDevMode()) {
-              console.log('+-+- checking on inventory items found\n', resp);
-            }
             // response does not have totalPages... :(
             // suppose that if # of devices is less that the page size, then all devices have already been retrieved
             if (resp.data.length < inventoryFilter.pageSize) {
@@ -301,30 +285,12 @@ export class Commonc8yService {
    * @returns Promise object with the result of the service call
    */
   createManagedObject(managedObject: Partial<IManagedObject>): Promise<any> {
-    if (isDevMode()) {
-      console.log('+-+- CREATING MANAGED OBJECT ');
-    }
 
     return this.invSvc.create(managedObject);
-    /* return new Promise(
-             (resolve, reject) => {
-                 this.invSvc.create(managedObject)
-                     .then((resp) => {
-                         if (isDevMode()) { console.log('+-+- DETAILS FOR MANAGED OBJECT CREATION', resp); }
-                         // successful return code is 201 Created
-                         if (resp.res.status === 201) {
-                             resolve(resp.data);
-                         } else {
-                             reject(resp);
-                         }
-                     });
-             }); */
+
   }
 
   updateManagedObject(managedObject: Partial<IManagedObject>): Promise<any> {
-    if (isDevMode()) {
-      console.log('+-+- CREATING MANAGED OBJECT ');
-    }
 
     return this.invSvc.update(managedObject);
   }

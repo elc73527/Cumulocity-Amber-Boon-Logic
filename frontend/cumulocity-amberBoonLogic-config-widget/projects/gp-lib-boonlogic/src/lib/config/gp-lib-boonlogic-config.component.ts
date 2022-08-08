@@ -1,3 +1,21 @@
+/**
+ * Copyright (c) 2020 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Component, Input, isDevMode, OnInit } from '@angular/core';
 import { GpLibBoonlogicService } from '../gp-lib-boonlogic.service';
 import { AlertService, TranslateService } from '@c8y/ngx-components';
@@ -32,13 +50,9 @@ export class GpLibBoonlogicConfigComponent implements OnInit {
     this.config.connect = '0';
     await this.microserviceBoonLogic.verifySimulatorMicroServiceStatus();
     this.status = await this.cms.getAmberConnectionStatus();
-    if (isDevMode()) {console.log(this.status)};
   }
 
   async amberConnect() {
-    if (isDevMode()) {
-      console.log('+-+- CONNECTION INVOKED');
-    }
     this.microserviceBoonLogic.listUrl = 'amber-integration/configure';
     this.connectResponse = await this.microserviceBoonLogic.post({
       username: this.config.username,
@@ -50,9 +64,6 @@ export class GpLibBoonlogicConfigComponent implements OnInit {
       this.alertervice.success('Connection Established');
       this.list = [];
       let getResponse: any;
-      if (isDevMode()) {
-        console.log('+-+- STREAMALL INVOKED');
-      }
       let response = await this.cms.getSpecificFragmentDevices(1);
       response.data.forEach((device: any) => {
         let arr = { id: device.id };
@@ -69,15 +80,11 @@ export class GpLibBoonlogicConfigComponent implements OnInit {
     } else {
       this.alertervice.danger('Failed to Establish connection');
     }
-    //    this.connectionform.reset();
   }
 
   async amberDisconnect() {
     this.list = [];
     let getResponse: any;
-    if (isDevMode()) {
-      console.log('+-+- DISCONNECTION INVOKED');
-    }
     let response = await this.cms.getSpecificFragmentDevices(1);
     response.data.forEach((device: any) => {
       let arr = { id: device.id };
@@ -101,6 +108,5 @@ export class GpLibBoonlogicConfigComponent implements OnInit {
     } else {
       this.alertervice.danger('Failed to Disconnect');
     }
-    //    this.connectionform.reset();
   }
 }

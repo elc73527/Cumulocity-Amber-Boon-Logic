@@ -1,3 +1,21 @@
+/**
+ * Copyright (c) 2020 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
   Component,
   OnInit,
@@ -133,10 +151,8 @@ export class GpLibBoonlogicComponent implements OnInit {
     this.itemsPerPage = this.config.pageSize;
     this.displayDeRegisterStyle = 'none';
     this.displayReRegisterStyle = 'none';
-    this.statusResponse ="READY";
-    this.streamingWindowSize = 25;
     await this.microserviceBoonLogic.verifySimulatorMicroServiceStatus();
-    // await this.getConnectionStatusValue();
+    await this.getConnectionStatusValue();
     this.configDevice = '';
     this.suggestions$ = new Observable((observer: Observer<any>) => {
       this.cmonSvc.getAllDevices(1, this.model).then((res: { data: any }) => {
@@ -182,7 +198,7 @@ export class GpLibBoonlogicComponent implements OnInit {
 
     this.pagedItems.map(async (device: any) => {
       const manaogedObjectChannel = `/managedobjects/${device.id}`;
-      const detailSubs = this.realtimeService.subscribe(manaogedObjectChannel, (resp) => {
+      const detailSubs = this.realtimeService.subscribe(manaogedObjectChannel, (resp: { data: { data: any; }; }) => {
         if (resp && resp.data) {
           const data = resp.data ? resp.data.data : {};
           this.manageRealtime(data);
@@ -201,12 +217,6 @@ export class GpLibBoonlogicComponent implements OnInit {
   }
 
   async manageRealtime(device: any) {
-    if (isDevMode()) {
-      console.log('+-+- LIST MANAGED OBJECT WITH AMBER FRAGMENT', this.DeviceList);
-    }
-    if (isDevMode()) {
-      console.log('+-+- LIST MANAGED OBJECT WITH AMBER FRAGMENT', device);
-    }
     if (this.realtimeState) {
       const index = this.pagedItems.findIndex((element: { id: any }) => element.id === device.id);
       const isStreaming = String(device.c8y_AmberSensorConfiguration.isStreaming);
@@ -236,9 +246,6 @@ export class GpLibBoonlogicComponent implements OnInit {
   async loadSpecificFragmentDevice() {
     this.DeviceList = [];
     let response = await this.cmonSvc.getSpecificFragmentDevices(1);
-    if (isDevMode()) {
-      console.log('+-+- MANAGED OBJECT WITH AMBER FRAGMENT', response.data);
-    }
     response.data.forEach((device: any) => {
       const isStreaming = String(device.c8y_AmberSensorConfiguration.isStreaming);
       let arr = {
@@ -250,9 +257,6 @@ export class GpLibBoonlogicComponent implements OnInit {
       };
       this.DeviceList.push(arr);
     });
-    if (isDevMode()) {
-      console.log('+-+- DEVICE LIST WITH AMBER FRAGMENT', this.DeviceList);
-    }
     this.pagination();
     this.handleRealtime();
 
@@ -284,9 +288,6 @@ export class GpLibBoonlogicComponent implements OnInit {
 
   async invokeAction() {
     if (this.config.connect === '1') {
-      if (isDevMode()) {
-        console.log('+-+- CONNECTION INVOKED', this.config.connect);
-      }
       this.microserviceBoonLogic.listUrl = 'amber-integration/configure';
       this.connectResponse = await this.microserviceBoonLogic.post({
         username: this.config.username,
@@ -300,9 +301,6 @@ export class GpLibBoonlogicComponent implements OnInit {
         this.alertervice.danger('Failed to Establish connection');
       }
     } else if (this.config.connect === '0') {
-      if (isDevMode()) {
-        console.log('+-+- DISCONNECTION INVOKED', this.config.connect);
-      }
       this.microserviceBoonLogic.listUrl = 'amber-integration/disconnect';
       this.connectResponse = await this.microserviceBoonLogic.post({});
       this.getConnectionStatusValue();
@@ -325,7 +323,7 @@ export class GpLibBoonlogicComponent implements OnInit {
         distinctUntilChanged(),
         skip(1),
         tap(() => (this.searching = true)),
-        switchMap((value) =>
+        switchMap((value: any) =>
           from(this.cmonSvc.getAllDevices(1, value)).pipe(tap(() => (this.searching = false)))
         )
       )
@@ -373,13 +371,10 @@ export class GpLibBoonlogicComponent implements OnInit {
       this.measurementSubs = this.observableMeasurements$
         .pipe(skip(1))
         // tslint:disable-next-line: deprecation
-        .subscribe((mes) => {
+        .subscribe((mes: string | any[]) => {
           this.measurementTypeList = [];
           if (mes && mes.length > 0) {
             this.measurementTypeList = [...mes];
-            if (isDevMode()) {
-              console.log('+-+- CHECKING LIST MEASUREMENTS FOR: ', this.measurementTypeList);
-            }
           }
         });
     }
@@ -416,22 +411,10 @@ export class GpLibBoonlogicComponent implements OnInit {
                   )
                   .map((device: any) => device.id);
                 for (const device of uniqueDeviceList) {
-                  if (isDevMode()) {
-                    console.log('+-+- CHECKING Series FOR: ', device);
-                  }
                   const supportedMeasurements = await this.getSupportedMeasurementsForDevice(
                     device
                   );
-                  if (isDevMode()) {
-                    console.log(
-                      '+-+- supportedMeasurements FOR... ' + device,
-                      supportedMeasurements
-                    );
-                  }
                   const fragmentSeries = await this.getSupportedSeriesForDevice(device);
-                  if (isDevMode()) {
-                    console.log('+-+- FragmentSeries FOR... ' + device, fragmentSeries);
-                  }
                   if (
                     fragmentSeries &&
                     fragmentSeries.c8y_SupportedSeries &&
@@ -453,17 +436,8 @@ export class GpLibBoonlogicComponent implements OnInit {
                 }
               });
           } else {
-            if (isDevMode()) {
-              console.log('+-+- CHECKING MEASUREMENTS FOR: ', aDevice.id);
-            }
             const supportedMeasurements = await this.getSupportedMeasurementsForDevice(aDevice.id);
-            if (isDevMode()) {
-              console.log('+-+- supportedMeasurements FOR... ' + aDevice.id, supportedMeasurements);
-            }
             const fragmentSeries = await this.getSupportedSeriesForDevice(aDevice.id);
-            if (isDevMode()) {
-              console.log('+-+- FragmentSeries FOR... ' + aDevice.id, fragmentSeries);
-            }
             if (
               fragmentSeries &&
               fragmentSeries.c8y_SupportedSeries &&
@@ -571,6 +545,7 @@ export class GpLibBoonlogicComponent implements OnInit {
     this.modalRef.hide();
     this.addDeviceForm.reset();
   }
+
   invokeSetValue() {
     this.featurecount = 0;
     this.featurecount = this.selectedMeasurements.length;
@@ -619,12 +594,7 @@ export class GpLibBoonlogicComponent implements OnInit {
           let arr = { type: mstype, fragment: values[0], series: values[1] };
           this.deviceMeasurements.push(arr);
         });
-        if (isDevMode()) {
-          console.log('+-+- CHECKING MEASUREMENTS FOR: ', this.deviceMeasurements);
-        }
         // Micorservice configration Parameters initialization
-        // this.featurecount = this.deviceMeasurements.length;
-
         const config = {
           featureCount: this.featurecount,
           streamingWindowSize: this.streamingWindowSize || 25,
@@ -800,7 +770,7 @@ export class GpLibBoonlogicComponent implements OnInit {
       this.measurementSubs = this.observableMeasurements$
         .pipe(skip(1))
         // tslint:disable-next-line: deprecation
-        .subscribe((mes) => {
+        .subscribe((mes: string | any[]) => {
           this.measurementTypeList = [];
           if (mes && mes.length > 0) {
             this.measurementTypeList = [...mes];
@@ -834,7 +804,6 @@ export class GpLibBoonlogicComponent implements OnInit {
         console.log('+-+- CHECKING CONFIGURATIONS FOR: ', this.configuration);
       }
       // Micorservice configration Parameters initialization
-      // const featurecount = this.deviceMeasurements.length;
       const config = {
         featureCount: this.featurecount,
         streamingWindowSize: this.streamingWindowSize || 25,
@@ -892,7 +861,6 @@ export class GpLibBoonlogicComponent implements OnInit {
         console.log('+-+- AMBER MICROSERVICE OBJECT', this.application);
       }
       const appId = this.application[0].id;
-      // window.location = `/apps/administration/index.html#/microservices/${appId}/logs` as any;
       window.open(`/apps/administration/index.html#/microservices/${appId}/logs`, '_blank');
     } else {
       this.alertervice.danger(
