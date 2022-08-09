@@ -17,7 +17,7 @@
  */
 import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { GpLibRcaModule } from 'projects/gp-lib-rca/src/public-api';
+import { GpRcaModule } from 'projects/gp-rca/src/public-api';
 import { AppComponent } from './app.component';
 import { BehaviorSubject } from 'rxjs';
 import { CoreModule } from '@c8y/ngx-components';
@@ -75,7 +75,7 @@ export class MockAppStateService {
   ],
   imports: [
     BrowserModule,
-    GpLibRcaModule,
+    GpRcaModule,
     CoreModule.forRoot(),
     RouterModule.forRoot([]),
     ModalModule.forRoot(),

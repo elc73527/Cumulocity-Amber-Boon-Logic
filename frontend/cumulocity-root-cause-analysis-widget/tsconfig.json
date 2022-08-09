@@ -8,9 +8,9 @@
     "strict": true,
     "noImplicitReturns": true,
     "paths": {
-      "gp-lib-rca": [
-        "dist/gp-lib-rca/gp-lib-rca",
-        "dist/gp-lib-rca"
+      "gp-rca": [
+        "dist/gp-rca/gp-rca",
+        "dist/gp-rca"
       ]
     },
     "noFallthroughCasesInSwitch": true,

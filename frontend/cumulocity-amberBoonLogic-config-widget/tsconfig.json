@@ -8,9 +8,9 @@
     "strict": true,
     "noImplicitReturns": true,
     "paths": {
-      "gp-lib-boonlogic": [
-        "dist/gp-lib-boonlogic/gp-lib-boonlogic",
-        "dist/gp-lib-boonlogic"
+      "gp-boonlogic": [
+        "dist/gp-boonlogic/gp-boonlogic",
+        "dist/gp-boonlogic"
       ]
     },
     "noFallthroughCasesInSwitch": true,

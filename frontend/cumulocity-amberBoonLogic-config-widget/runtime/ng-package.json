@@ -4,7 +4,7 @@
     "styles/**/*"
   ],
   "lib": {
-    "entryFile": "../projects/gp-lib-boonlogic/src/public-api.ts",
+    "entryFile": "../projects/gp-boonlogic/src/public-api.ts",
     "umdModuleIds": {
       "@c8y/ngx-components": "@c8y/ngx-components"
     },

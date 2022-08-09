@@ -8,12 +8,12 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "buildPatch": "cd projects/gp-lib-rca && npm version patch && ng build gp-lib-rca && cd ../../dist/gp-lib-rca && npm pack && move *.tgz ../",
-    "buildMinor": "cd projects/gp-lib-rca && npm version minor && ng build gp-lib-rca && cd ../../dist/gp-lib-rca && npm pack && move *.tgz ../",
-    "buildMajor": "cd projects/gp-lib-rca && npm version major && ng build gp-lib-rca && cd ../../dist/gp-lib-rca && npm pack && move *.tgz ../",
-    "serve": "ng build gp-lib-rca && npm i dist/gp-lib-rca && ng s",
+    "buildPatch": "cd projects/gp-rca && npm version patch && ng build gp-rca && cd ../../dist/gp-rca && npm pack && move *.tgz ../",
+    "buildMinor": "cd projects/gp-rca && npm version minor && ng build gp-rca && cd ../../dist/gp-rca && npm pack && move *.tgz ../",
+    "buildMajor": "cd projects/gp-rca && npm version major && ng build gp-rca && cd ../../dist/gp-rca && npm pack && move *.tgz ../",
+    "serve": "ng build gp-rca && npm i dist/gp-rca && ng s",
     "runtime": "gulp --gulpfile ./runtime/gulpfile.js",
-    "prettier:all": "cd projects/gp-lib-rca/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\""
+    "prettier:all": "cd projects/gp-rca/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\""
   },
   "private": true,
   "dependencies": {
@@ -33,7 +33,7 @@
     "@c8y/style": "^1011.0.12",
     "@ng-select/ng-select": "^6.1.0",
     "chart.js": "^2.9.3",
-    "gp-lib-rca": "file:dist/gp-lib-rca",
+    "gp-rca": "file:dist/gp-rca",
     "ng2-charts": "^2.4.3",
     "ngx-bootstrap": "6.2.0",
     "prettier": "^2.6.2",

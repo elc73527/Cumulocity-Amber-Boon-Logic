@@ -1,0 +1,18 @@
+{
+  "name": "gp-boonlogic",
+  "version": "2.0.0",
+  "description": "This is an Angular widget which used to configure/reconfigure/delete/start - stop stream any device with Amber and is designed to display device model and streaming status on real time basis.",
+  "author": "Sabreen Irfana - Software AG, Global Presales",
+  "license": "Apache 2.0",
+  "peerDependencies": {
+    "@angular/common": "^11.1.1",
+    "@angular/core": "^11.1.1"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.180",
+    "@types/uuid": "^8.3.4"
+  }
+}

@@ -124,38 +124,38 @@
         }
       }
     },
-    "gp-lib-rca": {
+    "gp-rca": {
       "projectType": "library",
-      "root": "projects/gp-lib-rca",
-      "sourceRoot": "projects/gp-lib-rca/src",
+      "root": "projects/gp-rca",
+      "sourceRoot": "projects/gp-rca/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/gp-lib-rca/tsconfig.lib.json",
-            "project": "projects/gp-lib-rca/ng-package.json"
+            "tsConfig": "projects/gp-rca/tsconfig.lib.json",
+            "project": "projects/gp-rca/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/gp-lib-rca/tsconfig.lib.prod.json"
+              "tsConfig": "projects/gp-rca/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/gp-lib-rca/src/test.ts",
-            "tsConfig": "projects/gp-lib-rca/tsconfig.spec.json",
-            "karmaConfig": "projects/gp-lib-rca/karma.conf.js"
+            "main": "projects/gp-rca/src/test.ts",
+            "tsConfig": "projects/gp-rca/tsconfig.spec.json",
+            "karmaConfig": "projects/gp-rca/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/gp-lib-rca/tsconfig.lib.json",
-              "projects/gp-lib-rca/tsconfig.spec.json"
+              "projects/gp-rca/tsconfig.lib.json",
+              "projects/gp-rca/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

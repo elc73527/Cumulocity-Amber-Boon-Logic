@@ -124,38 +124,38 @@
         }
       }
     },
-    "gp-lib-boonlogic": {
+    "gp-boonlogic": {
       "projectType": "library",
-      "root": "projects/gp-lib-boonlogic",
-      "sourceRoot": "projects/gp-lib-boonlogic/src",
+      "root": "projects/gp-boonlogic",
+      "sourceRoot": "projects/gp-boonlogic/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/gp-lib-boonlogic/tsconfig.lib.json",
-            "project": "projects/gp-lib-boonlogic/ng-package.json"
+            "tsConfig": "projects/gp-boonlogic/tsconfig.lib.json",
+            "project": "projects/gp-boonlogic/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/gp-lib-boonlogic/tsconfig.lib.prod.json"
+              "tsConfig": "projects/gp-boonlogic/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/gp-lib-boonlogic/src/test.ts",
-            "tsConfig": "projects/gp-lib-boonlogic/tsconfig.spec.json",
-            "karmaConfig": "projects/gp-lib-boonlogic/karma.conf.js"
+            "main": "projects/gp-boonlogic/src/test.ts",
+            "tsConfig": "projects/gp-boonlogic/tsconfig.spec.json",
+            "karmaConfig": "projects/gp-boonlogic/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/gp-lib-boonlogic/tsconfig.lib.json",
-              "projects/gp-lib-boonlogic/tsconfig.spec.json"
+              "projects/gp-boonlogic/tsconfig.lib.json",
+              "projects/gp-boonlogic/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

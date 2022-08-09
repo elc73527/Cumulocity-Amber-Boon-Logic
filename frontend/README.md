@@ -80,12 +80,12 @@ And when ever AD>0 on click one can see the relavent RCA.
 
       Installation command :  ```npm i chart.js@2.9.3 ``` 
 
-2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-lib-rca-2.0.0.tgz)**
+2. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-rca-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
 ```
-npm i <binary  file  path>/gp-lib-rca-1.0.0.tgz
+npm i <binary  file  path>/gp-rca-2.0.0.tgz
 ```
 4. Open index.less located at /cumulocity-app-builder/ui-assets/
 
@@ -96,17 +96,17 @@ npm i <binary  file  path>/gp-lib-rca-1.0.0.tgz
 @import '~@c8y/style/main.less';
 @import '~@c8y/style/extend.less';
 ```
-6. Import GpLibRcaModule in app.module.ts and also place the imported Module under `@NgModule`.
+6. Import GpRcaModule in app.module.ts and also place the imported Module under `@NgModule`.
 
 ```
 
-import {GpLibRcaModule} from 'gp-lib-rca';
+import {GpRcaModule} from 'gp-rca';
 
 @NgModule({
 
   imports: [
 
-    GpLibRcaModule    
+    GpRcaModule    
 
       ]
 
@@ -266,12 +266,12 @@ Will work only if the respective tenant has amber specific microservice deployed
 
 **Note:** If you are new to App Builder or not yet downloaded/clone app builder code then please follow [App builder documentation(Build Instructions)](https://github.com/SoftwareAG/cumulocity-app-builder) before proceeding further.
 
-1. Grab the Amber RCA Chart **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-lib-boonlogic-2.0.0.tgz)**
+1. Grab the Boon Logic Configuration Widget **[Latest Release Binary](https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic/releases/download/2.0.0/gp-boonlogic-2.0.0.tgz)**
 
 3. Install the Binary file in app builder.
 
 ```
-npm i <binary  file  path>/gp-lib-boonlogic-1.0.0.tgz
+npm i <binary  file  path>/gp-boonlogic-2.0.0.tgz
 ```
 4. Open index.less located at /cumulocity-app-builder/ui-assets/
 
@@ -282,17 +282,17 @@ npm i <binary  file  path>/gp-lib-boonlogic-1.0.0.tgz
 @import '~@c8y/style/main.less';
 @import '~@c8y/style/extend.less';
 ```
-6. Import GpLibBoonlogicModule in app.module.ts and also place the imported Module under `@NgModule`.
+6. Import GpBoonlogicModule in app.module.ts and also place the imported Module under `@NgModule`.
 
 ```
 
-import {GpLibBoonlogicModule} from 'gp-lib-boonlogic';
+import {GpBoonlogicModule} from 'gp-boonlogic';
 
 @NgModule({
 
   imports: [
 
-    GpLibBoonlogicModule    
+    GpBoonlogicModule    
 
       ]
 
@@ -372,7 +372,7 @@ This guide will teach you how to add widget in your existing or new dashboard.
 
 
 
-Congratulations! RCA Chart is configured.
+Congratulations! BoonLogic Amber setting widget is configured.
 
 
 ## User Guide

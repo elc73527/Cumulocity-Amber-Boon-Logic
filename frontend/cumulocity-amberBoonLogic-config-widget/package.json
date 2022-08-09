@@ -8,12 +8,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "buildPatch": "cd projects/gp-lib-boonlogic && npm version patch && ng build gp-lib-boonlogic && cd ../../dist/gp-lib-boonlogic && npm pack && move *.tgz ../",
-    "buildMinor": "cd projects/gp-lib-boonlogic && npm version minor && ng build gp-lib-boonlogic && cd ../../dist/gp-lib-boonlogic && npm pack && move *.tgz ../",
-    "buildMajor": "cd projects/gp-lib-boonlogic && npm version major && ng build gp-lib-boonlogic && cd ../../dist/gp-lib-boonlogic && npm pack && move *.tgz ../",
-    "serve": "ng build gp-lib-boonlogic && npm i dist/gp-lib-boonlogic && ng s",
+    "lint-fix": "ng lint --fix",
+    "buildPatch": "cd projects/gp-boonlogic && npm version patch && ng build gp-boonlogic && cd ../../dist/gp-boonlogic && npm pack && move *.tgz ../",
+    "buildMinor": "cd projects/gp-boonlogic && npm version minor && ng build gp-boonlogic && cd ../../dist/gp-boonlogic && npm pack && move *.tgz ../",
+    "buildMajor": "cd projects/gp-boonlogic && npm version major && ng build gp-boonlogic && cd ../../dist/gp-boonlogic && npm pack && move *.tgz ../",
+    "serve": "ng build gp-boonlogic && npm i dist/gp-boonlogic && ng s",
     "runtime": "gulp --gulpfile ./runtime/gulpfile.js",
-    "prettier:all": "cd projects/gp-lib-boonlogic/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\""
+    "prettier:all": "cd projects/gp-boonlogic/src && prettier --write \"**/*.@(js|ts|html|md|css|less|json|yaml)\" \"!**/*.min.*\""
   },
   "private": true,
   "dependencies": {
@@ -31,7 +32,7 @@
     "@c8y/ngx-components": "1011.0.12",
     "@c8y/style": "^1011.0.12",
     "@ng-select/ng-select": "^6.1.0",
-    "gp-lib-boonlogic": "file:dist/gp-lib-boonlogic",
+    "gp-boonlogic": "file:dist/gp-boonlogic",
     "ngx-bootstrap": "6.2.0",
     "prettier": "^2.6.2"
   },

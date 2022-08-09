@@ -18,7 +18,7 @@
 
 import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { GpLibBoonlogicModule } from 'projects/gp-lib-boonlogic/src/public-api';
+import { GpBoonlogicModule } from 'projects/gp-boonlogic/src/public-api';
 import { AppComponent } from './app.component';
 import { BehaviorSubject } from 'rxjs';
 import { CoreModule } from '@c8y/ngx-components';
@@ -73,7 +73,7 @@ export class MockAppStateService {
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    GpLibBoonlogicModule,
+    GpBoonlogicModule,
     CoreModule.forRoot(),
     RouterModule.forRoot([]),
     CommonModule,
