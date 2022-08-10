@@ -296,7 +296,7 @@ export class Commonc8yService {
    *
    * @param input Validate JSON Input
    */
-  isValidJson({ input }: { input: any }): any {
+  isValidJson(input: any): any {
     try {
       if (input) {
         const o = JSON.parse(input);

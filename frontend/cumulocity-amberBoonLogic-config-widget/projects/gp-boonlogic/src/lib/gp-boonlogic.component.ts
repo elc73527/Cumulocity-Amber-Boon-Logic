@@ -220,7 +220,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     });
   }
 
-  async manageRealtime({ device }: { device: any }): Promise<void> {
+  async manageRealtime(device: any): Promise<void> {
     if (this.realtimeState) {
       const index = this.pagedItems.findIndex((element: { id: any }) => element.id === device.id);
       const isStreaming = String(device.c8y_AmberSensorConfiguration.isStreaming);
@@ -271,7 +271,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   /**
    * This method will called during page navigation
    */
-  pageChanged({ event }: { event: PageChangedEvent }): void {
+  pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     const endItem = event.page * event.itemsPerPage;
     this.pagedItems = this.DeviceList.slice(startItem, endItem); // Retrieve items for page
@@ -296,13 +296,9 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     if (this.config.connect === '1') {
       this.microserviceBoonLogic.listUrl = 'amber-integration/configure';
       this.connectResponse = await this.microserviceBoonLogic.post({
-        amberBoonLogicObj: {
-          amberBoonLogicObj: {
-            username: this.config.username,
-            password: this.config.password,
-            url: this.config.url,
-          },
-        },
+        username: this.config.username,
+        password: this.config.password,
+        url: this.config.url,
       });
       this.getConnectionStatusValue();
       if (this.connectResponse.status === 200) {
@@ -312,9 +308,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       }
     } else if (this.config.connect === '0') {
       this.microserviceBoonLogic.listUrl = 'amber-integration/disconnect';
-      this.connectResponse = await this.microserviceBoonLogic.post({
-        amberBoonLogicObj: { amberBoonLogicObj: {} },
-      });
+      this.connectResponse = await this.microserviceBoonLogic.post({});
       this.getConnectionStatusValue();
       if (this.connectResponse.status === 200) {
         this.alertervice.success('Successfully Disconnected');
@@ -347,7 +341,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   /**
    * Save device id and name when device is selected
    */
-  async deviceSelected({ device }: { device: DeviceConfig }): Promise<string | -1> {
+  async deviceSelected(device: DeviceConfig): Promise<string | -1> {
     if (device) {
       this.sel = true;
       this.Selecteddevice = { name: '', id: '' };
@@ -623,13 +617,9 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
         };
         this.microserviceBoonLogic.listUrl = 'amber-integration/sensors';
         this.createResponse = await this.microserviceBoonLogic.post({
-          amberBoonLogicObj: {
-            amberBoonLogicObj: {
-              id: this.Selecteddevice.id,
-              configuration: config,
-              dataPoints: this.deviceMeasurements,
-            },
-          },
+          id: this.Selecteddevice.id,
+          configuration: config,
+          dataPoints: this.deviceMeasurements,
         });
         await this.loadSpecificFragmentDevice();
         if (this.createResponse.status === 201 || this.createResponse.status === 200) {
@@ -640,6 +630,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       }
       this.modalRef.hide();
       this.addDeviceForm.reset();
+      this.refresh();
     }
   }
 
@@ -648,7 +639,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     this.DeRegister = this.pagedItems[index];
   }
 
-  setStartDeviceIndex({ index }: { index: any }): void {
+  setStartDeviceIndex(index: any): void {
     this.ReRegister = [];
     this.ReRegister = this.pagedItems[index];
   }
@@ -677,7 +668,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   openReRegisterPopup(e: any, i: any): void {
-    this.setStartDeviceIndex({ index: i });
+    this.setStartDeviceIndex(i);
     this.displayReRegisterStyle = 'block';
   }
 
@@ -691,11 +682,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     this.microserviceBoonLogic.listUrl =
       'amber-integration/sensors/' + this.DeRegister.id + '/status';
     getResponse = await this.microserviceBoonLogic.put({
-      amberBoonLogicObj: {
-        amberBoonLogicObj: {
-          isStreaming: false,
-        },
-      },
+      isStreaming: false,
     });
     if (getResponse.status === 200) {
       this.alertervice.success('Measurements Processing Stopped');
@@ -711,11 +698,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       await this.pagedItems.forEach(async (sm: any) => {
         this.microserviceBoonLogic.listUrl = 'amber-integration/sensors/' + sm.id + '/status';
         getResponse = await this.microserviceBoonLogic.put({
-          amberBoonLogicObj: {
-            amberBoonLogicObj: {
-              isStreaming: true,
-            },
-          },
+          isStreaming: true,
         });
       });
       await this.loadSpecificFragmentDevice();
@@ -729,11 +712,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       await this.pagedItems.forEach(async (sm: any) => {
         this.microserviceBoonLogic.listUrl = 'amber-integration/sensors/' + sm.id + '/status';
         getResponse = await this.microserviceBoonLogic.put({
-          amberBoonLogicObj: {
-            amberBoonLogicObj: {
-              isStreaming: false,
-            },
-          },
+          isStreaming: false,
         });
       });
       await this.loadSpecificFragmentDevice();
@@ -745,11 +724,9 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     let getResponse: any;
     this.closeDeletePopup();
     this.microserviceBoonLogic.listUrl = 'amber-integration/sensors/' + this.deviceDelete.id;
-    getResponse = await this.microserviceBoonLogic.remove({
-      amberBoonLogicObj: { amberBoonLogicObj: {} },
-    });
+    getResponse = await this.microserviceBoonLogic.remove({});
     await this.loadSpecificFragmentDevice();
-
+    await this.refresh();
     if (getResponse.status === 200) {
       this.alertervice.success('Deleted Successfully');
     } else {
@@ -763,11 +740,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     this.microserviceBoonLogic.listUrl =
       'amber-integration/sensors/' + this.ReRegister.id + '/status';
     getResponse = await this.microserviceBoonLogic.put({
-      amberBoonLogicObj: {
-        amberBoonLogicObj: {
-          isStreaming: true,
-        },
-      },
+      isStreaming: true,
     });
     if (getResponse.status === 200) {
       this.alertervice.success('Measurements Processing Started');
@@ -789,7 +762,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
     }
   }
 
-  async getspecificmeasurement({ deviceId }: { deviceId: any }): Promise<void> {
+  async getspecificmeasurement(deviceId: any): Promise<void> {
     if (deviceId) {
       const response = await this.cmonSvc.getTargetObject(deviceId);
       await this.getFragmentSeries(response, this.measurementList, this.observableMeasurements$);
@@ -858,13 +831,9 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
         'amber-integration/sensors/' + this.updateDevice.id + '/config';
 
       this.createResponse = await this.microserviceBoonLogic.put({
-        amberBoonLogicObj: {
-          amberBoonLogicObj: {
-            id: this.updateDevice.id,
-            configuration: config,
-            dataPoints: this.deviceMeasurements,
-          },
-        },
+        id: this.updateDevice.id,
+        configuration: config,
+        dataPoints: this.deviceMeasurements,
       });
       await this.loadSpecificFragmentDevice();
       if (this.createResponse.status === 201 || this.createResponse.status === 200) {
@@ -874,6 +843,7 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       }
       this.modalRef.hide();
       this.editDeviceForm.reset();
+      this.refresh();
     }
   }
 

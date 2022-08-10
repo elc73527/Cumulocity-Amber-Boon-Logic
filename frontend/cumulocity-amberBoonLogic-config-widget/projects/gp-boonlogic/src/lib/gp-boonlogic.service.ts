@@ -30,7 +30,7 @@ export class GpBoonlogicService extends Service<any> {
     super(client);
   }
 
-  post({ amberBoonLogicObj }: { amberBoonLogicObj: any }): any {
+  post(amberBoonLogicObj: any): any {
     if (!this.isMSExist) {
       return;
     }
@@ -43,7 +43,7 @@ export class GpBoonlogicService extends Service<any> {
     });
   }
 
-  put({ amberBoonLogicObj }: { amberBoonLogicObj: any }): any {
+  put(amberBoonLogicObj: any): any {
     if (!this.isMSExist) {
       return;
     }
@@ -56,7 +56,7 @@ export class GpBoonlogicService extends Service<any> {
     });
   }
 
-  remove({ amberBoonLogicObj }: { amberBoonLogicObj: any }): any {
+  remove(amberBoonLogicObj: any): any {
     if (!this.isMSExist) {
       return;
     }
