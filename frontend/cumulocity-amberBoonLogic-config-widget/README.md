@@ -122,7 +122,7 @@ npm run deploy
 
 1. Clone the repository:
 ```
-git clone https://labcase.softwareag.com/labcase/boon-logic.boon-logic.git
+git clone https://github.com/SoftwareAG/Cumulocity-Amber-Boon-Logic.git
 ```
 2. Change directory:
 

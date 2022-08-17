@@ -544,7 +544,6 @@ export class GpBoonlogicComponent implements OnInit, DoCheck, OnDestroy {
       this.Selecteddevice.id !== this.configDevice
     ) {
       this.configDevice = this.Selecteddevice.id;
-      // this.isBusy = true;
       this.measurementList = [];
       const response = await this.cmonSvc.getTargetObject(this.configDevice);
       this.getFragmentSeries(response, this.measurementList, this.observableMeasurements$);

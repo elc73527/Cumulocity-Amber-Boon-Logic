@@ -166,9 +166,6 @@ export class Commonc8yService {
     type: string
   ): Promise<IResultList<IManagedObject>> {
     const inventoryFilter = {
-      // fragmentType: type,
-      // valueFragmentType: type,
-      // type: type,
       pageSize: 15,
       withTotalPages: true,
       currentPage: pageToGet,
