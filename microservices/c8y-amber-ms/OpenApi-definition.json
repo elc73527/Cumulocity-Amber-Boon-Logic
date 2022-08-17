@@ -1,0 +1,307 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [
+    { "url": "https://boonlogic.eu-latest.cumulocity.com/", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/sensors/{id}/status": {
+      "put": {
+        "tags": ["rest-controller"],
+        "operationId": "updateSensorStatus",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SensorStatus" } }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/sensors/{id}/config": {
+      "get": {
+        "tags": ["rest-controller"],
+        "operationId": "getSensorConfiguration",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AmberSensorConfiguration" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["rest-controller"],
+        "operationId": "updateSensorConfiguration",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CumulocityDeviceConfiguration" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/sensors/{id}/stream": {
+      "post": {
+        "tags": ["rest-controller"],
+        "operationId": "streamData",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ServiceDataStream" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/AmberStreamData" } } }
+          }
+        }
+      }
+    },
+    "/sensors": {
+      "get": {
+        "tags": ["rest-controller"],
+        "operationId": "getSensors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AmberSensor" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["rest-controller"],
+        "operationId": "createSensor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CumulocityDeviceConfiguration" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/AmberSensor" } } }
+          }
+        }
+      }
+    },
+    "/disconnect": {
+      "post": {
+        "tags": ["rest-controller"],
+        "operationId": "disconnectClient",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/configure": {
+      "post": {
+        "tags": ["rest-controller"],
+        "operationId": "connect",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ServiceConfiguration" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "*/*": { "schema": { "type": "string" } } } }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "tags": ["rest-controller"],
+        "operationId": "getStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ServiceStatus" } }
+            }
+          }
+        }
+      }
+    },
+    "/sensors/{id}": {
+      "get": {
+        "tags": ["rest-controller"],
+        "operationId": "getSensor",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AmberSensor" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["rest-controller"],
+        "operationId": "deleteSensor",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SensorStatus": {
+        "type": "object",
+        "properties": { "isStreaming": { "type": "boolean" }, "streaming": { "type": "boolean" } }
+      },
+      "AmberSensorConfiguration": {
+        "type": "object",
+        "properties": {
+          "featureCount": { "type": "integer", "format": "int32" },
+          "streamingWindowSize": { "type": "integer", "format": "int32" },
+          "samplesToBuffer": { "type": "integer", "format": "int32" },
+          "learningRateNumerator": { "type": "integer", "format": "int32" },
+          "learningRateDenominator": { "type": "integer", "format": "int32" },
+          "learningMaxClusters": { "type": "integer", "format": "int32" },
+          "learningMaxSamples": { "type": "integer", "format": "int32" },
+          "anomalyHistoryWindow": { "type": "integer", "format": "int32" },
+          "percentVariation": { "type": "integer", "format": "int32" },
+          "features": { "type": "array", "items": { "$ref": "#/components/schemas/Feature" } }
+        }
+      },
+      "CumulocityDataPoint": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "fragment": { "type": "string" },
+          "series": { "type": "string" }
+        }
+      },
+      "CumulocityDeviceConfiguration": {
+        "required": ["configuration", "dataPoints"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "configuration": { "$ref": "#/components/schemas/AmberSensorConfiguration" },
+          "dataPoints": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CumulocityDataPoint" }
+          }
+        }
+      },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "maxVal": { "type": "integer", "format": "int32" },
+          "minVal": { "type": "integer", "format": "int32" },
+          "submitRule": { "type": "string" }
+        }
+      },
+      "ServiceDataStream": { "type": "object", "properties": { "data": { "type": "string" } } },
+      "AmberStreamData": {
+        "type": "object",
+        "properties": {
+          "state": { "type": "string" },
+          "message": { "type": "string" },
+          "clusterCount": { "type": "integer", "format": "int32" },
+          "sampleCount": { "type": "integer", "format": "int32" },
+          "progress": { "type": "integer", "format": "int32" },
+          "retryCount": { "type": "integer", "format": "int32" },
+          "streamingWindowSize": { "type": "integer", "format": "int32" },
+          "totalInferences": { "type": "integer", "format": "int32" },
+          "AD": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "AH": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "AM": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "AW": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "ID": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "RI": { "type": "array", "items": { "type": "integer", "format": "int32" } },
+          "SI": { "type": "array", "items": { "type": "integer", "format": "int32" } }
+        }
+      },
+      "AmberSensor": {
+        "type": "object",
+        "properties": {
+          "attrs": { "type": "object", "additionalProperties": { "type": "object" } },
+          "sensorId": { "type": "string" },
+          "label": { "type": "string" },
+          "usageInfo": { "$ref": "#/components/schemas/UsageInfo" },
+          "configuration": { "$ref": "#/components/schemas/AmberSensorConfiguration" },
+          "dataPoints": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CumulocityDataPoint" }
+          },
+          "streaming": { "type": "boolean" }
+        }
+      },
+      "CallStatistics": {
+        "type": "object",
+        "properties": {
+          "callsThisPeriod": { "type": "integer", "format": "int32" },
+          "callsTotal": { "type": "integer", "format": "int32" },
+          "lastCalled": { "type": "string" },
+          "samplesThisPeriod": { "type": "integer", "format": "int32" },
+          "samplesTotal": { "type": "integer", "format": "int32" }
+        }
+      },
+      "UsageInfo": {
+        "type": "object",
+        "properties": {
+          "getAmberSummary": { "$ref": "#/components/schemas/CallStatistics" },
+          "getConfig": { "$ref": "#/components/schemas/CallStatistics" },
+          "getPretrain": { "$ref": "#/components/schemas/CallStatistics" },
+          "getRootCause": { "$ref": "#/components/schemas/CallStatistics" },
+          "getSensor": { "$ref": "#/components/schemas/CallStatistics" },
+          "getStatus": { "$ref": "#/components/schemas/CallStatistics" },
+          "postConfig": { "$ref": "#/components/schemas/CallStatistics" },
+          "postPretrain": { "$ref": "#/components/schemas/CallStatistics" },
+          "postStream": { "$ref": "#/components/schemas/CallStatistics" },
+          "putSensor": { "$ref": "#/components/schemas/CallStatistics" }
+        }
+      },
+      "ServiceConfiguration": {
+        "required": ["password", "url", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      },
+      "ServiceStatus": {
+        "type": "object",
+        "properties": { "status": { "type": "string", "enum": ["NOT_CONNECTED", "READY"] } }
+      }
+    }
+  }
+}
