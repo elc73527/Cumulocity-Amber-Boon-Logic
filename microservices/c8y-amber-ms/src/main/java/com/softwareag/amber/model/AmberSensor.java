@@ -1,6 +1,7 @@
 package com.softwareag.amber.model;
 
 import com.cumulocity.model.util.Alias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.svenson.AbstractDynamicProperties;
@@ -25,6 +26,9 @@ public class AmberSensor extends AbstractDynamicProperties {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isStreaming;
+
+    @JsonIgnore
+    private long timestampOfLastMonitoringEventSent;
 
     @JSONProperty(
             ignoreIfNull = true

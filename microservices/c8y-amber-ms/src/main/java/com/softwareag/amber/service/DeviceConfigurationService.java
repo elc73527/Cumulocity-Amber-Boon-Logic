@@ -9,11 +9,7 @@ import com.cumulocity.rest.representation.event.EventRepresentation;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import com.cumulocity.rest.representation.measurement.MeasurementRepresentation;
 import com.cumulocity.sdk.client.PlatformImpl;
-import com.cumulocity.sdk.client.QueryParam;
 import com.cumulocity.sdk.client.SDKException;
-import com.cumulocity.sdk.client.audit.AuditRecordApi;
-import com.cumulocity.sdk.client.audit.AuditRecordCollection;
-import com.cumulocity.sdk.client.audit.AuditRecordFilter;
 import com.cumulocity.sdk.client.event.EventApi;
 import com.cumulocity.sdk.client.inventory.InventoryApi;
 import com.cumulocity.sdk.client.inventory.InventoryFilter;
@@ -44,6 +40,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class DeviceConfigurationService {
+    private static final int TWELVE_HOURS_IN_MILLISECONDS = 1000 * 60 * 60 * 12;
 
     private final InventoryApi inventoryApi;
 
@@ -73,25 +70,13 @@ public class DeviceConfigurationService {
 
     @Autowired
     public DeviceConfigurationService(PlatformImpl platform, InventoryApi inventoryApi, MeasurementApi measurementApi,
-                                      EventApi eventApi, AmberService amberService, ContextService<MicroserviceCredentials> contextService,
-                                      AuditRecordApi auditRecordApi) {
+                                      EventApi eventApi, AmberService amberService, ContextService<MicroserviceCredentials> contextService) {
         this.inventoryApi = inventoryApi;
         this.measurementApi = measurementApi;
         this.eventApi = eventApi;
         this.amberService = amberService;
         this.contextService = contextService;
         subscriber = new MeasurementRealtimeNotificationSubscriber(platform);
-
-        final AuditRecordFilter filter = new AuditRecordFilter().bySource("").byType("Alarm");
-
-        filter.getQueryParams().put("revert", "true");
-
-        filter.getQueryParams().put("pageSize", "50");
-
-        auditRecordApi.getAuditRecords().get(2000, queryParams)
-
-        final AuditRecordCollection audits = auditRecordApi.getAuditRecordsByFilter(filter);
-
     }
 
     public void init(final MicroserviceCredentials credentials) {
@@ -248,7 +233,8 @@ public class DeviceConfigurationService {
 
                     // only create Amber state event if the state has been changed
                     if (!sensorStreamingData.containsKey(deviceId)
-                            || isAmberSensorStateChanged(sensorStreamingData.get(deviceId), amberStreamDataResponse)) {
+                            || isAmberSensorStateChanged(sensorStreamingData.get(deviceId), amberStreamDataResponse)
+                            || isMonitoringEventAndTimeForLastMonitoringEventElapsed(amberStreamDataResponse, sensor)) {
                         createAmberStateEvent(deviceId, amberStreamDataResponse);
                     }
 
@@ -450,6 +436,29 @@ public class DeviceConfigurationService {
         }
 
         return !oldStreamData.getState().equalsIgnoreCase(newStreamData.getState());
+    }
+
+    private boolean isMonitoringEventAndTimeForLastMonitoringEventElapsed(final AmberStreamData amberStreamData,
+                                                                          final AmberSensor sensor) {
+        if (amberStreamData == null || sensor == null) {
+            return false;
+        }
+
+        if (!amberStreamData.getState().equals("Monitoring")) {
+            return false;
+        }
+
+        final DateTime currentTime = new DateTime();
+
+        // if timestamp hasn't been set yet or if twelve hours have elapsed since the last monitoring event send
+        // out a new monitoring event
+        if (sensor.getTimestampOfLastMonitoringEventSent() == 0
+                || (sensor.getTimestampOfLastMonitoringEventSent() <= currentTime.getMillis() - TWELVE_HOURS_IN_MILLISECONDS)) {
+            sensor.setTimestampOfLastMonitoringEventSent(currentTime.getMillis());
+            return true;
+        }
+
+        return false;
     }
 
     private int increaseSampleCount(final AmberStreamData oldStreamData) {
