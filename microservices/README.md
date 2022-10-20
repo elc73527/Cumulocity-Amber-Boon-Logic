@@ -30,7 +30,7 @@ See `com/softwareag/amber/service/DeviceConfigurationService.java` for related i
 
    mvn clean install
 
-2. Create a new Microservice application on your Cumulocity IoT tenant
+2. Create a new Microservice application on your Cumulocity IoT tenant. In the directory `Postman` you will find a Postman collection `c8y-Microservice.postman_collection.json`, which contains template requests to create a Microservice and to query the corresponding bootstrap user. Import the collection into your Postman environment.
 
    `POST https://{base-url}/application/applications`
 
