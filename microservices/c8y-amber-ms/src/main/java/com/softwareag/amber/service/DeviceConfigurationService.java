@@ -494,6 +494,11 @@ public class DeviceConfigurationService {
         Map<String, Object> fragments = new HashMap<>();
 
         for (int index = 0; index < rootCause.length; index++) {
+            if (index >= dataPoints.length) {
+                log.error("root cause vector does not match data points");
+                break;
+            }
+
             final String datapointName = dataPoints[index].getFragment() + "-" + dataPoints[index].getSeries();
             fragments.put(datapointName, new MeasurementValue(new BigDecimal(rootCause[index]), ""));
         }
