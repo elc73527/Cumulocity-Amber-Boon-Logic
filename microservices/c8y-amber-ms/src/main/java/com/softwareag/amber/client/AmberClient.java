@@ -43,6 +43,7 @@ public class AmberClient {
         try {
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/sensors"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .GET()
                     .build();
 
@@ -75,6 +76,7 @@ public class AmberClient {
         try {
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/sensor"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString("{\"label\":\"\"}"))
                     .build();
 
@@ -108,6 +110,7 @@ public class AmberClient {
         try {
             request = HttpRequest.newBuilder(new URI(url + "/sensor"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .GET()
                     .build();
@@ -142,6 +145,7 @@ public class AmberClient {
         try {
             request = HttpRequest.newBuilder(new URI(url + "/sensor"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .DELETE()
                     .build();
@@ -176,6 +180,7 @@ public class AmberClient {
             final String sensorConfigurationJson = new ObjectMapper().writeValueAsString(configuration);
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/config"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .POST(HttpRequest.BodyPublishers.ofString(sensorConfigurationJson))
                     .build();
@@ -209,6 +214,7 @@ public class AmberClient {
         try {
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/config"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .GET()
                     .build();
@@ -244,6 +250,7 @@ public class AmberClient {
             log.info("stream data: {}", serviceDataStreamJson);
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/stream"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .POST(HttpRequest.BodyPublishers.ofString(serviceDataStreamJson))
                     .build();
@@ -278,6 +285,7 @@ public class AmberClient {
 
             final HttpRequest request = HttpRequest.newBuilder(new URI(url + "/rootCause?clusterID=[" + clusterId + "]"))
                     .header("Authorization", "Bearer " + oAuthConfiguration.getIdToken())
+                    .header("Content-Type", "application/json")
                     .header("sensorId", sensorId)
                     .GET()
                     .build();
