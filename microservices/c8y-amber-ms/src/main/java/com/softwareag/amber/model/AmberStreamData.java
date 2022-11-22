@@ -44,4 +44,16 @@ public class AmberStreamData {
 
     @JsonProperty("SI")
     private int[] SI;
+
+    @JsonProperty("NI")
+    private int[] NI;
+
+    @JsonProperty("NS")
+    private int[] NS;
+
+    @JsonProperty("OM")
+    private double[] OM;
+
+    @JsonProperty("NW")
+    private int[] NW;
 }
