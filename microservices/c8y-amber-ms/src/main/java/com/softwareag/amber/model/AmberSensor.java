@@ -70,15 +70,15 @@ public class AmberSensor extends AbstractDynamicProperties {
 
         @Data
         public class CallStatistics {
-            private int callsThisPeriod;
+            private long callsThisPeriod;
 
-            private int callsTotal;
+            private long callsTotal;
 
             private String lastCalled;
 
-            private int samplesThisPeriod;
+            private long samplesThisPeriod;
 
-            private int samplesTotal;
+            private long samplesTotal;
         }
     }
 }

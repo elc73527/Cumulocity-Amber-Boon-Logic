@@ -9,19 +9,19 @@ public class AmberSensorConfiguration {
 
     private int streamingWindowSize;
 
-    private int samplesToBuffer;
+    private long samplesToBuffer;
 
-    private int learningRateNumerator;
+    private long learningRateNumerator;
 
-    private int learningRateDenominator;
+    private long learningRateDenominator;
 
     private int learningMaxClusters;
 
-    private int learningMaxSamples;
+    private long learningMaxSamples;
 
     private int anomalyHistoryWindow;
 
-    private int percentVariation;
+    private double percentVariation;
 
     private Feature[] features;
 
@@ -29,9 +29,9 @@ public class AmberSensorConfiguration {
     public static class Feature {
         private String label;
 
-        private int maxVal;
+        private double maxVal;
 
-        private int minVal;
+        private double minVal;
 
         private String submitRule;
     }

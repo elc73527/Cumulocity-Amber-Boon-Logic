@@ -31,7 +31,7 @@ public class AmberStreamData {
     private int[] AH;
 
     @JsonProperty("AM")
-    private int[] AM;
+    private double[] AM;
 
     @JsonProperty("AW")
     private int[] AW;
@@ -55,5 +55,5 @@ public class AmberStreamData {
     private double[] OM;
 
     @JsonProperty("NW")
-    private int[] NW;
+    private double[] NW;
 }
