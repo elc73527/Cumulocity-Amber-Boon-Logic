@@ -1,8 +1,10 @@
 package com.softwareag.amber.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AmberSensorConfiguration {
 
     private int featureCount;

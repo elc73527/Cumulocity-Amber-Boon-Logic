@@ -2,6 +2,7 @@ package com.softwareag.amber.model;
 
 import com.cumulocity.model.util.Alias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.svenson.AbstractDynamicProperties;
@@ -9,6 +10,7 @@ import org.svenson.JSONProperty;
 
 @Alias("c8y_AmberSensorConfiguration")
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AmberSensor extends AbstractDynamicProperties {
 
     private String sensorId;

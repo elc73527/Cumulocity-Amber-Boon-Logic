@@ -1,11 +1,13 @@
 package com.softwareag.amber.model;
 
 import com.cumulocity.model.util.Alias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Alias("c8y_AmberSensorStatus")
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AmberStreamData {
 
     private String state;
