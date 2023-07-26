@@ -2,6 +2,7 @@ package com.softwareag.amber.service;
 
 import com.boonamber.AmberV2Client;
 import com.boonamber.ApiException;
+import com.boonamber.LicenseProfile;
 import com.boonamber.models.*;
 import com.boonamber.models.FeatureConfig.FusionRuleEnum;
 import com.softwareag.amber.model.AmberSensor;
@@ -30,10 +31,10 @@ public class AmberService {
     
     private AmberV2Client client;
 
-    public boolean checkAuthentication(final String url, final String username, final String password) {
+    public boolean checkAuthentication(final String url, final String licenseKey, final String secretKey) {
     	try {
-    		// TODO how to set username and password without amber.license file
-    		AmberV2Client test = new AmberV2Client();
+    		LicenseProfile auth = new LicenseProfile(url, licenseKey, secretKey);
+    		AmberV2Client test = new AmberV2Client(auth);
     		test.getVersion();
     	} catch (ApiException e) {
     		return false;
@@ -41,10 +42,10 @@ public class AmberService {
     	return true;
     }
 
-    public void initializeConnection(final String url, final String username, final String password) {
-    	// TODO how to init Amber client without amber.license file
+    public void initializeConnection(final String url, final String licenseKey, final String secretKey) {
     	try {
-    		client = new AmberV2Client();
+    		LicenseProfile auth = new LicenseProfile(url, licenseKey, secretKey);
+    		client = new AmberV2Client(auth);
     	} catch (ApiException e) {
     		throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     	}
