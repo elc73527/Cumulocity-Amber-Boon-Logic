@@ -1,5 +1,7 @@
 package com.softwareag.amber.service;
 
+import com.boonamber.models.Model;
+import com.boonamber.models.PostDataResponse;
 import com.cumulocity.microservice.context.ContextService;
 import com.cumulocity.microservice.context.credentials.MicroserviceCredentials;
 import com.cumulocity.model.JSONBase;
@@ -17,8 +19,6 @@ import com.cumulocity.sdk.client.inventory.ManagedObjectCollection;
 import com.cumulocity.sdk.client.measurement.MeasurementApi;
 import com.cumulocity.sdk.client.notification.Subscription;
 import com.cumulocity.sdk.client.notification.SubscriptionListener;
-import com.softwareag.amber.model.AmberSensor;
-import com.softwareag.amber.model.AmberStreamData;
 import com.softwareag.amber.model.CumulocityDataPoint;
 import com.softwareag.amber.model.ServiceDataStream;
 import com.softwareag.amber.notification.MeasurementNotification;
@@ -58,9 +58,9 @@ public class DeviceConfigurationService {
 
     private final JSON json = JSON.defaultJSON();
 
-    private final Map<String, AmberSensor> sensors = new HashMap<>();
+    private final Map<String, Model> sensors = new HashMap<>();
 
-    private final Map<String, AmberStreamData> sensorStreamingData = new HashMap<>();
+    private final Map<String, PostDataResponse> sensorStreamingData = new HashMap<>();
 
     private final Map<String, BigDecimal[]> deviceDataVectors = new HashMap<>();
 
@@ -87,12 +87,12 @@ public class DeviceConfigurationService {
 
     public void initDeviceConfigurations() {
         try {
-            final ManagedObjectCollection managedObjectCollection = inventoryApi.getManagedObjectsByFilter(new InventoryFilter().byFragmentType(AmberSensor.class));
+            final ManagedObjectCollection managedObjectCollection = inventoryApi.getManagedObjectsByFilter(new InventoryFilter().byFragmentType(Model.class));
             final List<ManagedObjectRepresentation> devices = managedObjectCollection.get(2000).getManagedObjects();
 
             devices.forEach((device) -> {
-                final AmberSensor sensor = jsonParser.parse(AmberSensor.class, json.forValue(device.get("c8y_AmberSensorConfiguration")));
-                final AmberStreamData sensorStreamData = jsonParser.parse(AmberStreamData.class, json.forValue(device.get("c8y_AmberSensorStatus")));
+                final Model sensor = jsonParser.parse(Model.class, json.forValue(new Model()));
+                final PostDataResponse sensorStreamData = jsonParser.parse(PostDataResponse.class, json.forValue(new PostDataResponse()));
 
                 sensors.put(device.getId().getValue(), sensor);
                 sensorStreamingData.put(device.getId().getValue(), sensorStreamData);
@@ -110,17 +110,20 @@ public class DeviceConfigurationService {
             return;
         }
 
-        for (Map.Entry<String, AmberSensor> entry : sensors.entrySet()) {
-            final AmberSensor sensor = entry.getValue();
+        for (Map.Entry<String, Model> entry : sensors.entrySet()) {
+//            final Model sensor = entry.getValue();
             final String deviceId = entry.getKey();
 
-            if (sensor.isStreaming()) {
+            // why are we checking streaming here?
+//            if (sensor.isStreaming()) {
+            Boolean streaming = true;
+            if (streaming) {
                 registerForMeasurementNotifications(deviceId);
             }
         }
     }
 
-    public Optional<AmberSensor> getSensorInformation(final String deviceId) {
+    public Optional<Model> getSensorInformation(final String deviceId) {
         if (!sensors.containsKey(deviceId)) {
             return Optional.empty();
         }
@@ -133,35 +136,18 @@ public class DeviceConfigurationService {
             throw new HttpServerErrorException(HttpStatus.NOT_FOUND);
         }
 
-        final AmberSensor sensor = sensors.get(deviceId);
-        amberService.deleteSensor(sensor.getSensorId());
+        final Model sensor = sensors.get(deviceId);
+        amberService.deleteSensor(sensor.getId());
         cancelMeasurementSubscription(deviceId);
         updateCumulocityDeviceRepresentationAndRemoveConfiguration(deviceId);
         sensors.remove(deviceId);
     }
 
-    public void updateDeviceWithAmberSensorConfiguration(final String deviceId, final AmberSensor amberSensor) {
+    public void updateDeviceWithAmberSensorConfiguration(final String deviceId, final Model amberSensor) {
         updateCumulocityDeviceRepresentationWithConfiguration(deviceId, amberSensor, true);
         sensors.put(deviceId, amberSensor);
         sensorStreamingData.remove(deviceId);
         updateMeasurementNotificationSubscription(deviceId);
-    }
-
-    public void toggleDeviceStreamingState(final String deviceId, final boolean isStreaming) {
-        if (!sensors.containsKey(deviceId)) {
-            log.error("[toggleDeviceStreamingState]: Device not found for id: ", deviceId);
-            throw new HttpServerErrorException(HttpStatus.NOT_FOUND, "No Amber sensor found for device: " + deviceId);
-        }
-
-        if (isStreaming) {
-            registerForMeasurementNotifications(deviceId);
-        } else {
-            cancelMeasurementSubscription(deviceId);
-        }
-
-        final AmberSensor sensor = sensors.get(deviceId);
-        sensor.setStreaming(isStreaming);
-        updateCumulocityDeviceRepresentationWithConfiguration(deviceId, sensor, false);
     }
 
     public void cancelMeasurementSubscriptions() {
@@ -194,7 +180,7 @@ public class DeviceConfigurationService {
     }
 
     private void registerForMeasurementNotifications(final String deviceId) {
-        final AmberSensor sensor = sensors.get(deviceId);
+        final Model sensor = sensors.get(deviceId);
         final CumulocityDataPoint[] dataPoints = sensor.getDataPoints();
         deviceDataVectors.put(deviceId, new BigDecimal[dataPoints.length]);
 
@@ -221,8 +207,9 @@ public class DeviceConfigurationService {
                     if (!isDataVectorValid(dataVector)) {
                         return;
                     }
-                    final AmberStreamData amberStreamDataResponse = sendDataVectorToAmber(sensor.getSensorId(), dataVector);
-                    amberStreamDataResponse.setSampleCount(increaseSampleCount(sensorStreamingData.get(deviceId)));
+                    final PostDataResponse amberStreamDataResponse = sendDataVectorToAmber(sensor.getId(), dataVector);
+                    // TODO does this work with a get and a set?
+                    amberStreamDataResponse.getStatus().setSampleCount(increaseSampleCount(sensorStreamingData.get(deviceId)));
                     // reset data vector
                     deviceDataVectors.put(deviceId, new BigDecimal[dataPoints.length]);
 
@@ -251,12 +238,12 @@ public class DeviceConfigurationService {
         measurementSubscriptions.put(deviceId, measurementSubscription);
     }
 
-    private AmberStreamData sendDataVectorToAmber(final String amberSensorId, final BigDecimal[] dataVector) {
+    private PostDataResponse sendDataVectorToAmber(final String amberSensorId, final BigDecimal[] dataVector) {
         final String dataVectorPayload = Arrays.toString(dataVector).replace("[", "").replace("]", "").replace(" ", "");
         return amberService.streamData(amberSensorId, new ServiceDataStream(dataVectorPayload));
     }
 
-    private void updateCumulocityDeviceWithAmberStatus(final String deviceId, final AmberStreamData streamData) {
+    private void updateCumulocityDeviceWithAmberStatus(final String deviceId, final PostDataResponse streamData) {
         contextService.runWithinContext(credentials, () -> {
             final ManagedObjectRepresentation managedObjectRepresentation = new ManagedObjectRepresentation();
             managedObjectRepresentation.setId(new GId(deviceId));
@@ -270,24 +257,24 @@ public class DeviceConfigurationService {
         });
     }
 
-    private Optional<Map<String, Object>> createRootCauseMeasurement(final String deviceId, final AmberStreamData streamData,
-                                                                     final AmberSensor sensor) {
+    private Optional<Map<String, Object>> createRootCauseMeasurement(final String deviceId, final PostDataResponse streamData,
+                                                                     final Model sensor) {
         if (StringUtils.isEmpty(deviceId) || streamData == null || sensor == null) {
             log.error("Parameters must not be null");
             return Optional.empty();
         }
 
         // only query root cause and create rootCause measurement if an anomaly is detected
-        if (streamData.getAD() == null || streamData.getAD().length == 0 || streamData.getAD()[0] == 0) {
+        if (streamData.getAnalytics().getAD() == null || streamData.getAnalytics().getAD().size() == 0 || streamData.getAnalytics().getAD().get(0) == 0) {
             return Optional.empty();
         }
 
-        if (streamData.getID() == null || streamData.getID().length == 0) {
+        if (streamData.getAnalytics().getID() == null || streamData.getAnalytics().getID().size() == 0) {
             return Optional.empty();
         }
 
-        final int clusterId = streamData.getID()[0];
-        final double[] rootCause = amberService.getRootCause(sensor.getSensorId(), clusterId);
+        final int clusterId = streamData.getAnalytics().getID().get(0);
+        final double[] rootCause = amberService.getRootCause(sensor.getId(), clusterId);
 
         if (rootCause == null || rootCause.length == 0) {
             return Optional.empty();
@@ -298,7 +285,7 @@ public class DeviceConfigurationService {
         return rootCauseMeasurementFragments;
     }
 
-    private void createAmberStreamDataStatusMeasurement(final String deviceId, final AmberStreamData streamData,
+    private void createAmberStreamDataStatusMeasurement(final String deviceId, final PostDataResponse streamData,
                                                         final Optional<Map<String, Object>> rootCauseMeasurementFragments) {
         final ManagedObjectRepresentation managedObjectRepresentation = new ManagedObjectRepresentation();
         managedObjectRepresentation.setId(new GId(deviceId));
@@ -307,29 +294,47 @@ public class DeviceConfigurationService {
         measurementRepresentation.setType("c8y_AmberStatus");
         measurementRepresentation.setDateTime(DateTime.now());
 
-        if (streamData.getID() != null && streamData.getID().length > 0
-                && streamData.getSI() != null && streamData.getSI().length > 0) {
+        if (streamData.getAnalytics().getID() != null && streamData.getAnalytics().getID().size() > 0
+                && streamData.getAnalytics().getSI() != null && streamData.getAnalytics().getSI().size() > 0) {
             Map<String, Object> fragment = new HashMap<>();
-            fragment.put("id", new MeasurementValue(new BigDecimal(streamData.getID()[0]), ""));
+            fragment.put("id", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getID().get(0)), ""));
             measurementRepresentation.setProperty("c8y_cluster_id", fragment);
         }
 
-        if (streamData.getSI() != null && streamData.getSI().length > 0) {
+        if (streamData.getAnalytics().getSI() != null && streamData.getAnalytics().getSI().size() > 0) {
             Map<String, Object> fragment = new HashMap<>();
-            fragment.put("si", new MeasurementValue(new BigDecimal(streamData.getSI()[0]), "idx"));
+            fragment.put("si", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getSI().get(0)), "idx"));
             measurementRepresentation.setProperty("c8y_anomaly_index", fragment);
         }
 
-        if (streamData.getAW() != null && streamData.getAW().length > 0) {
+        if (streamData.getAnalytics().getAW() != null && streamData.getAnalytics().getAW().size() > 0) {
             Map<String, Object> fragment = new HashMap<>();
-            fragment.put("aw", new MeasurementValue(new BigDecimal(streamData.getAW()[0]), "int"));
+            fragment.put("aw", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getAW().get(0)), "int"));
             measurementRepresentation.setProperty("c8y_aw", fragment);
         }
 
-        if (streamData.getAD() != null && streamData.getAD().length > 0) {
+        if (streamData.getAnalytics().getAD() != null && streamData.getAnalytics().getAD().size() > 0) {
             Map<String, Object> fragment = new HashMap<>();
-            fragment.put("ad", new MeasurementValue(new BigDecimal(streamData.getAD()[0]), "bin"));
+            fragment.put("ad", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getAD().get(0)), "bin"));
             measurementRepresentation.setProperty("c8y_ad", fragment);
+        }
+        
+        if (streamData.getAnalytics().getNI() != null && streamData.getAnalytics().getNI().size() > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("ni", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getNI().get(0)), "bin"));
+            measurementRepresentation.setProperty("c8y_ni", fragment);
+        }
+        
+        if (streamData.getAnalytics().getPI() != null && streamData.getAnalytics().getPI().size() > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("pi", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getPI().get(0)), "bin"));
+            measurementRepresentation.setProperty("c8y_pi", fragment);
+        }
+        
+        if (streamData.getAnalytics().getNW() != null && streamData.getAnalytics().getNW().size() > 0) {
+            Map<String, Object> fragment = new HashMap<>();
+            fragment.put("nw", new MeasurementValue(new BigDecimal(streamData.getAnalytics().getNW().get(0)), "bin"));
+            measurementRepresentation.setProperty("c8y_nw", fragment);
         }
 
         if (rootCauseMeasurementFragments.isPresent()) {
@@ -337,14 +342,14 @@ public class DeviceConfigurationService {
         }
 
         Map<String, Object> sampleCountFragment = new HashMap<>();
-        sampleCountFragment.put("sample_count", new MeasurementValue(new BigDecimal(streamData.getSampleCount()), ""));
+        sampleCountFragment.put("sample_count", new MeasurementValue(new BigDecimal(streamData.getStatus().getSampleCount()), ""));
         measurementRepresentation.setProperty("c8y_sample_count", sampleCountFragment);
 
         measurementApi.createWithoutResponse(measurementRepresentation);
     }
 
-    private void createAmberStateEvent(final String deviceId, final AmberStreamData streamData) {
-        if (streamData == null || StringUtils.isEmpty(streamData.getState())) {
+    private void createAmberStateEvent(final String deviceId, final PostDataResponse streamData) {
+        if (streamData == null || StringUtils.isEmpty(streamData.getStatus().getState())) {
             return;
         }
 
@@ -354,13 +359,13 @@ public class DeviceConfigurationService {
         eventRepresentation.setSource(managedObjectRepresentation);
         eventRepresentation.setDateTime(DateTime.now());
         eventRepresentation.setType("c8y_nano_state");
-        eventRepresentation.setText(streamData.getState());
-        eventRepresentation.setProperty("state_flow", streamData.getState());
+        eventRepresentation.setText(streamData.getStatus().getState().getValue());
+        eventRepresentation.setProperty("state_flow", streamData.getStatus().getState());
 
         eventApi.createAsync(eventRepresentation);
     }
 
-    private void updateCumulocityDeviceRepresentationWithConfiguration(final String deviceId, final AmberSensor sensor,
+    private void updateCumulocityDeviceRepresentationWithConfiguration(final String deviceId, final Model sensor,
                                                                        final boolean isClearSensorStatus) {
         final ManagedObjectRepresentation managedObjectRepresentation = new ManagedObjectRepresentation();
         managedObjectRepresentation.setId(new GId(deviceId));
@@ -430,21 +435,21 @@ public class DeviceConfigurationService {
         return true;
     }
 
-    private boolean isAmberSensorStateChanged(final AmberStreamData oldStreamData, final AmberStreamData newStreamData) {
+    private boolean isAmberSensorStateChanged(final PostDataResponse oldStreamData, final PostDataResponse newStreamData) {
         if (oldStreamData == null || newStreamData == null) {
             return false;
         }
 
-        return !oldStreamData.getState().equalsIgnoreCase(newStreamData.getState());
+        return !oldStreamData.getStatus().getState().equals(newStreamData.getStatus().getState());
     }
 
-    private boolean isMonitoringEventAndTimeForLastMonitoringEventElapsed(final AmberStreamData amberStreamData,
-                                                                          final AmberSensor sensor) {
+    private boolean isMonitoringEventAndTimeForLastMonitoringEventElapsed(final PostDataResponse amberStreamData,
+                                                                          final Model sensor) {
         if (amberStreamData == null || sensor == null) {
             return false;
         }
 
-        if (!amberStreamData.getState().equals("Monitoring")) {
+        if (!amberStreamData.getStatus().getState().equals("Monitoring")) {
             return false;
         }
 
@@ -452,22 +457,22 @@ public class DeviceConfigurationService {
 
         // if timestamp hasn't been set yet or if twelve hours have elapsed since the last monitoring event send
         // out a new monitoring event
-        if (sensor.getTimestampOfLastMonitoringEventSent() == 0
-                || (sensor.getTimestampOfLastMonitoringEventSent() <= currentTime.getMillis() - TWELVE_HOURS_IN_MILLISECONDS)) {
-            sensor.setTimestampOfLastMonitoringEventSent(currentTime.getMillis());
+        Long lastModified = Long.parseLong(sensor.getModified());
+        if (lastModified == 0
+                || (lastModified <= currentTime.getMillis() - TWELVE_HOURS_IN_MILLISECONDS)) {
             return true;
         }
 
         return false;
     }
 
-    private int increaseSampleCount(final AmberStreamData oldStreamData) {
+    private int increaseSampleCount(final PostDataResponse oldStreamData) {
         // if there isn't a stream dataset available, then we can assume it's the first sample, which has been sent
         if (oldStreamData == null) {
             return 1;
         }
 
-        return oldStreamData.getSampleCount() + 1;
+        return oldStreamData.getStatus().getSampleCount() + 1;
     }
 
     private Map<String, Object> getMeasurementFragment(final MeasurementRepresentation measurementRepresentation,

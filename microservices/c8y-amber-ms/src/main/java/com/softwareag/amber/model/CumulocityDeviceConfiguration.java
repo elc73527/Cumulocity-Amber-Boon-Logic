@@ -4,12 +4,14 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+import com.boonamber.models.PostConfigRequest;
+
 @Data
 public class CumulocityDeviceConfiguration {
 
     private String id;
 
-    private @NotNull AmberSensorConfiguration configuration;
+    private @NotNull PostConfigRequest configuration;
 
     private @NotNull CumulocityDataPoint[] dataPoints;
 }
